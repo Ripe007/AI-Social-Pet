@@ -29,6 +29,7 @@ func init() {
 			beego.NSRouter("/list", &controllers.CommunityController{}, "post:List"),                //动态列表
 			beego.NSRouter("/publish", &controllers.CommunityController{}, "post:Publish"),          //自发/转发动态
 			beego.NSRouter("/like", &controllers.CommunityController{}, "post:Like"),                //点赞/取消点赞
+			beego.NSRouter("/like/get", &controllers.CommunityController{}, "post:LikeGet"),         //获取用户点赞信息
 			beego.NSRouter("/comment/add", &controllers.CommunityController{}, "post:CommentAdd"),   //添加评论
 			beego.NSRouter("/comment/list", &controllers.CommunityController{}, "post:CommentList"), //评论列表
 		),

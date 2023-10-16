@@ -311,6 +311,10 @@ func (c *CommunityController) CommentList() {
 // 社区动态
 func (c *CommunityController) List() {
 	var (
+		req struct {
+			SourceId string `json:"source_id"`
+		}
+
 		err error
 
 		list = make([]struct {
@@ -323,8 +327,43 @@ func (c *CommunityController) List() {
 		c.WriteJsonMsgWithError(list, err)
 	}()
 
-	err = global.DB.Table(new(models.CommunityContextInfo).TableName()).
-		Join("INNER", new(models.CommunityConfigInfo).TableName(), "community_context_info.id=community_config_info.source_id").
-		Desc("community_context_info.create_at").
+	if err = c.ReadJSON(&req); err != nil {
+		return
+	}
+
+	coll := global.DB.Table(new(models.CommunityContextInfo).TableName()).
+	Join("INNER", new(models.CommunityConfigInfo).TableName(), "community_context_info.id=community_config_info.source_id")
+
+	if req.SourceId != "" {
+		coll.Where("community_context_info.id = ?", req.SourceId)
+	}
+
+	err = coll.Desc("community_context_info.create_at").
 		Find(&list)
+}
+
+func (c *CommunityController) LikeGet() {
+	var (
+		req struct {
+			UserAddr string `json:"user_addr"`
+			SourceId string `json:"source_id"`
+		}
+
+		err error
+
+		res models.CommunityLikeInfo
+	)
+	defer func() {
+		c.WriteJsonMsgWithError(res, err)
+	}()
+
+	if err = c.ReadJSON(&req); err != nil {
+		return
+	}
+
+	_, err = global.DB.Table(new(models.CommunityLikeInfo).TableName()).
+		Where("user_addr = ?", req.UserAddr).
+		Where("source_id = ?", req.SourceId).
+		Get(&res)
+
 }
