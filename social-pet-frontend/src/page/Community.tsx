@@ -2,6 +2,7 @@ import Write from "@/components/card/community/Write";
 import Talk from "@/components/talk";
 import axios from "axios";
 import { defineComponent, inject, ref } from "vue";
+import { useRouter } from "vue-router";
 import styled from "vue3-styled-component";
 
 const Community = () => {
@@ -59,6 +60,7 @@ const Community = () => {
   `;
   return defineComponent({
     setup(props, ctx) {
+      const router = useRouter();
       const activeType = ref(0);
       const writeRef = ref<any>(null);
       const contexts = ref<any>([]);
@@ -66,7 +68,7 @@ const Community = () => {
       const change = (type: number) => {
         activeType.value = type;
       };
-
+     
       const init = () => {
         pageLoader(true);
         axios.post("/api/community/list").then((res) => {

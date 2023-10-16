@@ -10,6 +10,7 @@ import {
   useMessage,
 } from "naive-ui";
 import { defineComponent, ref } from "vue";
+import { useRouter } from "vue-router";
 import styled from "vue3-styled-component";
 
 export type TalkSource = {
@@ -126,6 +127,7 @@ const Talk = () => {
       "forward_count",
     ],
     setup(props, { expose }) {
+      const router = useRouter();
       let source = props as TalkSource;
       const showDropdown = ref(false);
       const showModal = ref(false);
@@ -164,6 +166,14 @@ const Talk = () => {
         // }, 1000);
         // console.log(item);
       };
+      const goto = (item: any) => {
+        router.push({
+          path: "/detail",
+          query: {
+            id: source.source_id,
+          },
+        });
+      };
       const comfirm = () => {
         if (tipSource.value.food || tipSource.value.eth) {
           loading.value = true;
@@ -184,7 +194,7 @@ const Talk = () => {
       return () => (
         <FlexCol>
           <Avanent src="/assets/logo.png"></Avanent>
-          <Content>
+          <Content onClick={goto}>
             <NickName>
               {source.userAddr.substring(0, 6) +
                 "..." +
@@ -205,7 +215,11 @@ const Talk = () => {
                 <img src="/assets/icon/back.svg" width={20} alt="" />
                 <div>{source.forward_count}</div>
               </But>
-              <But>
+              <But
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
                 <img src="/assets/icon/donate.svg" width={20} alt="" />
                 <NDropdown
                   show={showDropdown.value}
