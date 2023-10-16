@@ -37,6 +37,11 @@ export const useWallet = defineStore("mywallet", () => {
     const provider = new ethers.providers.Web3Provider(
       (window as any).ethereum
     );
+    const network = await provider.getNetwork();
+    if (network.chainId !== 5) {
+      alert("please choose goerli-net");
+      return;
+    }
     const singer = provider.getSigner();
     const account = await singer.getAddress();
     wallet.value.account = account;
